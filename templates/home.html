@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html lang = "en" id = "top">
+    <head>
+        <title>Lol Daniel Bad</title>
+        <link href="https://fonts.googleapis.com/css?family=Rajdhani&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/static/style.css">
+    </head>
+    <p>
+        {%- for message in get_flashed_messages() %}
+            {{ message }}
+         {%- endfor %}
+    </p>
+
+    <body>
+        <div id = "mainright">
+            <br>
+            <h3>Your Inventory</h3>
+            <br>
+            <table border="0">
+                <thead>
+                        <tr>
+                        <th class = "tahead">Name</th>
+                        <th class = "tahead">Amount</th>
+                        {% if current_user.is_authenticated %}
+                            <th></th>
+                        {% endif %}
+                        </tr>
+                    </thead>
+                <tbody>
+                    {% for thing in consumables %}
+                    <tr>
+                        <td class = "tacolumn">{{ thing.name }}</td>
+                        <td class = "tacolumn">{{ thing.amount }}</td>
+                        {% if current_user.is_authenticated %}
+                            <td id = "delcolumn">
+                                <form action = "/delete" method = "post">
+                                    <input type = "hidden" name = "id" value = "{{ thing.id }}">
+                                    <input type = "submit" value = "delete" id = "delete">
+                                </form>
+                            </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <br>
+            <p id = "jump"><a href="#top">Jump to top</a></p>
+        </div>
+        <img src = "../static/images/Backpack.png" id = "img">
+        <div id = "login">
+            {% if not current_user.is_authenticated %}
+                <p>Login to edit</p>
+                <form action = "{{ url_for('login_page') }}" method=post>
+                    {{ form.csrf_token }}
+                    <div class="username">
+                        {{ form.username.label }}<br>
+                        {{ form.username(placeholder='Username') }}
+                        {% if form.username.errors %}
+                        <ul class="errors">
+                            {% for error in form.username.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="password">
+                    {{ form.password.label }}<br>
+                    {{ form.password(placeholder='Password') }}
+                    {% if form.username.errors %}
+                        <ul class="errors">
+                        {% for error in form.password.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                    </div>
+                    <div class="submitbutton">
+                        <input id="submit" type="submit" value="Submit">
+                    </div>
+                </form>
+            {% endif %}
+            {% if current_user.is_authenticated %}
+            <p>Add Item</p>
+                <form action = "{{ url_for('new') }}" method = "post">
+                    <div id = "form">
+                        <label for = "name">Name</label><br>
+                        <input type = "text" name = "name" placeholder = "Name" /><br>
+                        <label for = "amount">Amount</label><br>
+                        <input type = "number" name = "amount" placeholder = "Amount" /><br>
+                        <input type = "submit" value = "Submit" id = "submit"/>
+                    </div>
+                </form>
+                <p><a href = '/logout' id = 'logout'>Logout</a></p>
+            {% endif %}
+        </div>
+    </body>
+</html>
